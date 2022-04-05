@@ -47,7 +47,6 @@ function requestProcessor($request)
   if(!isset($request['type']))
   {
     echo "ERROR: unsupported message type";
-    //return "ERROR: unsupported message type";
   }
   return doRegister($request['username'], $request['password'], $request['email'], $request['phonenumber']);
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
