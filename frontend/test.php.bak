@@ -26,7 +26,7 @@ $response = $client->send_request($request);
 
 if ($response == 1)
 	echo 'incredible!';
-else
+else ($response)
 	echo 'thats rough buddy';
 
 echo "client received response: ".PHP_EOL;

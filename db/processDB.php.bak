@@ -1,12 +1,15 @@
 #!/usr/bin/php
 <?php
 
+ini_set('display_errors',1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
-include('config.php');
 
-function doRegister($request)
+function doRegister($fname, $username, $email, $password)
 {
     $hostname = '10.242.222.211';
     $dbuser = 'casey';
@@ -14,10 +17,6 @@ function doRegister($request)
     $dbname = 'it490';
     $dbport = "3306";
     $conn = mysqli_connect($hostname, $dbuser, $dbpass, $dbname, $dbport);
-	$username = $request['username'];
-	$email = $request['email'];
-	$password = $request['password'];
-	$phonenumber = $request['phonenumber'];
 	
     if (!$conn)
 	{
@@ -26,7 +25,7 @@ function doRegister($request)
 	}
 	echo "Connection Established".PHP_EOL;
 	
-    $query = "INSERT INTO `it490`.`users` (`username`, `email`, `password`, 'phonenumber') VALUES ('$username', '$email', '$password', '$phonenumber')";
+    $query = "INSERT INTO `Project`.`users` (`username`, `email`, `password`, 'phonenumber') VALUES ('$username', '$email', '$password', '$phonenumber')";
         
     if (mysqli_query($conn, $query)) {
   	echo "New record created successfully";
@@ -44,7 +43,6 @@ mysqli_close($conn);
 function test($request)
 {
 	echo "test works on the database";
-	doRegister($request);
 	return 1;
 }
 
