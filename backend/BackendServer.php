@@ -1,8 +1,5 @@
 #!/usr/bin/php
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 
 ini_set('display_errors',1);
 ini_set('display_startup_errors', 1);
@@ -63,11 +60,6 @@ function loginUser($username,$password)
 	}
 	echo "Connection Established".PHP_EOL;
 	
-	//$username = $POST['username'];
-	//$password = $POST['password'];
-	//$username2 = $mysqli->escape_string($username);
-	//$password2 = $mysqli->escape_string($password);
-	
 	$username = strtolower(trim($username));
 	
 	// lookup username and password in database
@@ -83,7 +75,7 @@ function loginUser($username,$password)
 	}
 	if (mysqli_num_rows($result)==0)
 	{
-		echo "NO GOOD";
+		echo "User Not Found";
 	}
 	else
 	{
@@ -96,12 +88,18 @@ function loginUser($username,$password)
 			}
 			else
 			{
-				echo "No Good";
+				echo "Incorrect username/password";
 				return 2;
 				
 			}
 		}
 	}
+}
+
+function test($testmessage){
+	echo "test works";
+	echo $testmessage;
+	return $testmessage;
 }
 
 function processor($request)
@@ -118,6 +116,8 @@ function processor($request)
       return loginUser($request['username'],$request['password']);
     case "register":
       return registerUser($request['phonenumber'], $request['username'], $request['email'], $request['password']);
+	case "test":
+		return test($request['testmessage']);
   }
 }
 

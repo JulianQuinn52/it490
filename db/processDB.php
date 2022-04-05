@@ -1,8 +1,5 @@
 #!/usr/bin/php
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 
 ini_set('display_errors',1);
 ini_set('display_startup_errors', 1);
@@ -14,10 +11,10 @@ require_once('rabbitMQLib.inc');
 
 function doRegister($fname, $username, $email, $password)
 {
-    $hostname = 'localhost';
-    $dbuser = 'root';
-    $dbpass = 'admin';
-    $dbname = 'project';
+    $hostname = '10.242.222.211';
+    $dbuser = 'casey';
+    $dbpass = 'it490project';
+    $dbname = 'it490';
     $dbport = "3306";
     $conn = mysqli_connect($hostname, $dbuser, $dbpass, $dbname, $dbport);
 	
@@ -28,10 +25,8 @@ function doRegister($fname, $username, $email, $password)
 	}
 	echo "Connection Established".PHP_EOL;
 	
-    $query = "INSERT INTO `Project`.`users` (`username`, `email`, `password`, phonenumber') VALUES ('$username', '$email', '$email', '$password')";
-    
-//    $query = "INSERT INTO `Project`.`user` (`first_name`, `username`, `email`, `password`) VALUES ('bob', 'bob', 'bob@gmail.com', 'bobby')";
-    
+    $query = "INSERT INTO `Project`.`users` (`username`, `email`, `password`, 'phonenumber') VALUES ('$username', '$email', '$password', '$phonenumber')";
+        
     if (mysqli_query($conn, $query)) {
   	echo "New record created successfully";
   	return true;
@@ -60,8 +55,8 @@ function requestProcessor($request)
 
 $server = new rabbitMQServer("testDatabase.ini","testServer");
 
-echo "testRabbitMQServer BEGIN";
+echo "databaseServer BEGIN";
 $server->process_requests('requestProcessor');
-echo "testRabbitMQServer END";
+echo "databaseServer END";
 exit();
 ?>
