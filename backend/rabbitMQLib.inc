@@ -39,7 +39,6 @@ class rabbitMQServer
 
 	function process_message($msg)
 	{
-		// send the ack to clear the item from the queue
 		if ($msg->getRoutingKey() !== "*")
 		{
 			return;
@@ -49,8 +48,6 @@ class rabbitMQServer
 		{
 			if ($msg->getReplyTo())
 			{
-				// message wants a response
-				// process request
 				$body = $msg->getBody();
 				$payload = json_decode($body, true);
 				$response;
@@ -85,7 +82,6 @@ class rabbitMQServer
 		{
 			$event = date("Y-m-d") . "  " . date("h:i:sa") . " --- DataBase --- " . "error: rabbitMQServer: process_message: exception caught: ".$e . "\n";
     			log_event($event);
-			// ampq throws exception if get fails...
 			echo "error: rabbitMQServer: process_message: exception caught: ".$e;
 		}
 		// message does not require a response, send ack immediately
@@ -243,12 +239,6 @@ class rabbitMQClient
 		}
 	}
 
-	/**
-	  @brief send a one-way message to the server.  These are
-	  auto-acknowledged and give no response.
-	  @param message the body of the request.  This must make sense to the
-	  server
-	 */
 	function publish($message)
 	{
 		$json_message = json_encode($message);
