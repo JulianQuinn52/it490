@@ -4,7 +4,7 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
-include('config.php');
+//include('config.php');
 
 function doRegister($request)
 {
@@ -26,7 +26,7 @@ function doRegister($request)
 	}
 	echo "Connection Established".PHP_EOL;
 	
-    $query = "INSERT INTO `it490`.`users` (`username`, `email`, `password`, 'phonenumber') VALUES ('$username', '$email', '$password', '$phonenumber')";
+    $query = "INSERT INTO `it490`.`users` (`username`, `email`, `password`, `phone`) VALUES ('$username', '$email', '$password', '$phonenumber')";
         
     if (mysqli_query($conn, $query)) {
   	echo "New record created successfully";
@@ -63,6 +63,8 @@ function requestProcessor($request)
 	 return doRegister($request);
 	case "test":
 	 return test($request);
+	 case"login":
+	 return($request);
 	}
 	echo "whoomps";
 	return 0;
