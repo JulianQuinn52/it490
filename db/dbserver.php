@@ -4,10 +4,10 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
-//include('config.php');
 
 function doRegister($request)
 {
+echo 'trying to register';
     $hostname = '10.242.222.211';
     $dbuser = 'casey';
     $dbpass = 'it490project';
@@ -26,7 +26,7 @@ function doRegister($request)
 	}
 	echo "Connection Established".PHP_EOL;
 	
-    $query = "INSERT INTO `it490`.`users` (`username`, `email`, `password`, `phone`) VALUES ('$username', '$email', '$password', '$phonenumber')";
+    $query = "INSERT INTO `it490`.`users` (`username`, `email`, `password`, 'phonenumber') VALUES ('$username', '$email', '$password', '$phonenumber')";
         
     if (mysqli_query($conn, $query)) {
   	echo "New record created successfully";
@@ -37,15 +37,17 @@ function doRegister($request)
 
 mysqli_close($conn);
     
-    //$sql = "INSERT INTO `PROJECT`.`Users` (`userid`, `name`, `username`, `email`, `password`, `Security Answer 1`, `Security Answer 2`) VALUES (123, '$username', '$fname + " "$lname', '$email', '$password', '$seca1', '$seca2')";
-
 }
 
 function test($request)
 {
 	echo "test works on the database";
-	doRegister($request);
-	return 1;
+	//doRegister($request);
+	$client = new rabbitMQClient("testDatabase.ini","testServer");
+	//$response = $client->send_request($request);
+	$request['success'] = 1;
+	$request['message'] = "test message made it to the database and then made it back wahoo"; 
+	return $request;
 }
 
 function requestProcessor($request)
@@ -63,13 +65,12 @@ function requestProcessor($request)
 	 return doRegister($request);
 	case "test":
 	 return test($request);
-	 case"login":
-	 return($request);
-	}
-	echo "whoomps";
+	 default:{
+	echo "request type invalid";
 	return 0;
- ///// return doRegister($request['username'], $request['password'], $request['email'], $request['phonenumber']);
- ///// return array("returnCode" => '0', 'message'=>"Server received request and processed");
+	}
+}
+return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 
 $server = new rabbitMQServer("testDatabase.ini","testServer");
