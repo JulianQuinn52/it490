@@ -20,11 +20,11 @@ $response = $client->send_request($request);
 
 if($response == 1){
 	$_SESSION["username"] = $_POST["username"];
-        header("Location: index.html");
+        header("Location: index.php");
 	
 	
 } else{
-        header("Location: login.html");
+        header("Location: index.php");
 	$msg = "Unauthorized.\nTry Again";
         echo "<script type='text/javascript'>alert('$msg');</script>";
 
