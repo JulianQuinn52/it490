@@ -25,7 +25,7 @@ if($response == 1){
 	
 	
 } else{
-        header("Location: login.php");
+        header("Location: index.php");
 	$msg = "Unauthorized.\nTry Again";
         echo "<script type='text/javascript'>alert('$msg');</script>";
 
