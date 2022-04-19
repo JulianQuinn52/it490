@@ -70,9 +70,10 @@ $request['username'] = $_POST["uname"];
 $request['password'] = $_POST["psw"];
 $request['email'] = $_POST["email"];
 $request['phonenumber'] = $_POST["pnumber"];
+$request['success'] = 0;
 $response = $client->send_request($request);
 
-if($response == 1){
+if($response['success'] == 1){
 	$_POST["uname"] . " and Password = " . $_POST["psw"] . "\n";
 	log_event($event);
 	header("Location: index.php");
@@ -81,6 +82,21 @@ if($response == 1){
 	header("Location: form.php");
 	exit();
 }
+
+function requestProcessor($return)
+{
+echo "request processed";
+echo $return;
+return $return;
+  
+}
+
+$server = new rabbitMQServer("testRabbitMQ.ini","testServer");
+
+echo "LISTENING";
+$server->process_requests('requestProcessor');
+echo "DONE";
+echo $argv[0]." END".PHP_EOL;
 exit();
 }
 ?>
