@@ -30,7 +30,21 @@ if($response == 1){
         echo "<script type='text/javascript'>alert('$msg');</script>";
 
 }
+	
+	function requestProcessor($return)
+{
+echo "request processed";
+echo $return;
+return $return;
+  
+}
+	
+$server = new rabbitMQServer("testRabbitMQ.ini","testServer");
 
+echo "LISTENING";
+$server->process_requests('requestProcessor');
+echo "DONE";
+echo $argv[0]." END".PHP_EOL;
 exit();		
 }
 ?>
