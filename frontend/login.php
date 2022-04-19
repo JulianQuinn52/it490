@@ -16,10 +16,11 @@ $request = array();
 $request['type'] = "login";
 $request['username'] = $_POST["uname"];
 $request['password'] = $_POST["psw"];
+$request['success'] = 0;
 $response = $client->send_request($request);
 
 
-if($response == 1){
+if($response['success'] == 1){
 	$_SESSION["username"] = $_POST["username"];
         header("Location: index.php");
 	
