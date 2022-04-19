@@ -20,7 +20,12 @@ echo 'trying to register';
     $dbuser = 'casey';
     $dbpass = 'it490project';
     $dbname = 'it490';
-    $dbport = "3306";
+    $dbport = "3306";    
+    $hostname2 = '10.242.244.173';
+    $dbuser2 = 'repl';
+    $dbpass2 = 'password';
+    $dbname2 = 'it490';
+    $dbport2 = "3306";
     $conn = mysqli_connect($hostname, $dbuser, $dbpass, $dbname, $dbport);
 	$username = $request['username'];
 	$email = $request['email'];
@@ -29,8 +34,13 @@ echo 'trying to register';
 	
     if (!$conn)
 	{
-		echo "Error connecting to database: ".$conn->connect_errno.PHP_EOL;
-		exit(1);
+		$conn = mysqli_connect($hostname2, $dbuser2, $dbpass2, $dbname2, $dbport2);
+
+		if (!$conn)
+		{
+			echo "Error connecting to database: ".$conn->connect_errno.PHP_EOL;
+			exit(1);
+		}
 	}
 	echo "Connection Established".PHP_EOL;
 	
