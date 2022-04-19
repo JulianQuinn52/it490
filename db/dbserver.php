@@ -1,13 +1,13 @@
 #!/usr/bin/php
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
-error_reporting(E_ALL);
+//use PhpAmqpLib\Connection\AMQPStreamConnection;
+//use PhpAmqpLib\Message\AMQPMessage;
+
+//ini_set('display_errors',1);
+//ini_set('display_startup_errors',1);
+//error_reporting(E_ALL);
 
 require_once('path.inc');
 require_once('get_host_info.inc');
@@ -94,7 +94,7 @@ if (!$conn)
 			}
 			else
 			{
-				echo "Not Found"
+				echo "Not Found";
 				return 2;
 			}
 		}
@@ -136,47 +136,10 @@ function requestProcessor($request)
 	return 0;
 	}
   }
-return array("returnCode" => '0', 'message'=>"Server received request and processed");
+//return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 
-$ip = ["10.242.222.211", "10.242.244.173"];
-$num=0;
-for ($i=0; $i<count($ip); $i++)
-{
-	$host = $ip[$i];
-	exec("ping -c 2" . $host, $output, $result);
-	
-	if($result==0)
-	{
-		echo PHP_EOL. "[*] ".$host." is Online".PHP_EOL;
-		break;
-	}
-	else
-	{
-		echo PHP_EOL. "[*] ".$host." is Offline".PHP_EOL;
-		$host = "off";
-	}
-
-}
-if ($host == "10.242.222.211")
-{
-	$node="testDatabase.ini";
-	echo $node .PHP_EOL;
-}
-
-if ($host == "10.242.244.173")
-{
-	$node="testDatabase.ini";
-	echo $node .PHP_EOL;
-}
-
-if ($host == "off")
-{
-	$node="No Machine is running";
-	echo $node .PHP_EOL;
-}
-
-$server = new rabbitMQServer($node,"testServer");
+$server = new rabbitMQServer("testDatabase.ini","testServer");
 
 echo "databaseServer BEGIN";
 $server->process_requests('requestProcessor');
