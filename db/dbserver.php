@@ -15,6 +15,7 @@ require_once('rabbitMQLib.inc');
 
 function doRegister($request)
 {
+//$client = new rabbitMQClient("testDatabase.ini","testServer");
 echo 'trying to register';
     $hostname = '10.242.222.211';
     $dbuser = 'casey';
@@ -30,7 +31,7 @@ echo 'trying to register';
 	$username = $request['username'];
 	$email = $request['email'];
 	$password = $request['password'];
-	$phonenumber = $request['phone'];
+	$phone = $request['phone'];
 	
     if (!$conn)
 	{
@@ -44,13 +45,16 @@ echo 'trying to register';
 	}
 	echo "Connection Established".PHP_EOL;
 	
-    $query = "INSERT INTO `it490`.`users` (`username`, `email`, `password`, `phone`) VALUES ('$username', '$email', '$password', '$phonenumber')";
+    $query = "INSERT INTO `it490`.`users` (`username`, `email`, `password`, `phone`) VALUES ('$username', '$email', '$password', '$phone')";
         
     if (mysqli_query($conn, $query)) {
   	echo "New record created successfully";
-  	return true;
+
+	return $request;
 }   else {
   	echo "Error: " . $query . "<br>" . mysqli_error($conn);
+
+	return $request;
 }
 
 mysqli_close($conn);
@@ -59,8 +63,9 @@ mysqli_close($conn);
 
 function doLogin($request)
 {
-
+//$client = new rabbitMQClient("testDatabase.ini","testServer");
 echo 'trying to login';
+
     $hostname = '10.242.222.211';
     $dbuser = 'casey';
     $dbpass = 'it490project';
@@ -78,6 +83,7 @@ if (!$conn)
 	$username = $request['username'];
 	$password = $request['password'];
 	
+	
 	//Search database for username and password
 	$search = "SELECT * FROM users WHERE username='$username' AND password= '$password'";
 	
@@ -91,7 +97,7 @@ if (!$conn)
 	}
 	if(mysqli_num_rows($result)==0)
 	{
-		echo "Incorrect Login";
+		echo "Correct Login";
 	}
 	else
 	{
@@ -100,12 +106,14 @@ if (!$conn)
 			if($username=$row['username'] && $password=['password'])
 			{
 				echo "Succesful";
-				return 1;
+				$request['succuess'] = 1;
+				return $request;
 			}
 			else
 			{
 				echo "Not Found";
-				return 2;
+				$request['succuess'] = 0;
+				return $request;
 			}
 		}
 	
