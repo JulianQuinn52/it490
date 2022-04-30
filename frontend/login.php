@@ -16,10 +16,11 @@ $request = array();
 $request['type'] = "login";
 $request['username'] = $_POST["uname"];
 $request['password'] = $_POST["psw"];
+$request['success'] = 0;
 $response = $client->send_request($request);
 
 
-if($response == 1){
+if($response['success'] == 1){
 	$_SESSION["username"] = $_POST["username"];
         header("Location: index.php");
 	
@@ -30,7 +31,21 @@ if($response == 1){
         echo "<script type='text/javascript'>alert('$msg');</script>";
 
 }
+	
+	function requestProcessor($return)
+{
+echo "request processed";
+echo $return;
+return $return;
+  
+}
+	
+$server = new rabbitMQServer("testRabbitMQ.ini","testServer");
 
+echo "LISTENING";
+$server->process_requests('requestProcessor');
+echo "DONE";
+echo $argv[0]." END".PHP_EOL;
 exit();		
 }
 ?>
