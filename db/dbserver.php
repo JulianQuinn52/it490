@@ -2,8 +2,8 @@
 <?php
 
 
-//use PhpAmqpLib\Connection\AMQPStreamConnection;
-//use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 
 //ini_set('display_errors',1);
 //ini_set('display_startup_errors',1);
@@ -36,10 +36,13 @@ echo 'trying to register';
     if (!$conn)
 	{
 		$conn = mysqli_connect($hostname2, $dbuser2, $dbpass2, $dbname2, $dbport2);
-
 		if (!$conn)
 		{
 			echo "Error connecting to database: ".$conn->connect_errno.PHP_EOL;
+			$client = new rabbitMQClient("testDatabase.ini","testServer");
+			$request['success'] = 0;
+			$request['message'] = "Connection failed"; 
+			return $request;
 			exit(1);
 		}
 	}
@@ -49,12 +52,16 @@ echo 'trying to register';
         
     if (mysqli_query($conn, $query)) {
   	echo "New record created successfully";
-
-	return $request;
+	$client = new rabbitMQClient("testDatabase.ini","testServer");
+			$request['success'] = 1;
+			$request['message'] = "registration successful"; 
+			return $request;
 }   else {
   	echo "Error: " . $query . "<br>" . mysqli_error($conn);
-
-	return $request;
+$client = new rabbitMQClient("testDatabase.ini","testServer");
+			$request['success'] = 0;
+			$request['message'] = "registration failed"; 
+			return $request;
 }
 
 mysqli_close($conn);
@@ -72,11 +79,16 @@ echo 'trying to login';
     $dbname = 'it490';
     $dbport = "3306";
     $conn = mysqli_connect($hostname, $dbuser, $dbpass, $dbname, $dbport);
+    echo "trying to log in";
 
 if (!$conn)
 	{
 		echo "Error connecting to database: ".$conn->connect_errno.PHP_EOL;
+		$client = new rabbitMQClient("testDatabase.ini","testServer");
+		$request['success'] = 0;
+		$request['message'] = "Connection failed"; 
 		exit(1);
+		return $request;
 	}
 	echo "Connection Established".PHP_EOL;
 	
@@ -92,6 +104,10 @@ if (!$conn)
 	if($result == false)
 	{
 		echo "Not Found";
+		$client = new rabbitMQClient("testDatabase.ini","testServer");
+			$request['success'] = 0;
+			$request['message'] = "not found"; 
+			return $request;
 		$result=0;
 	
 	}
@@ -106,13 +122,17 @@ if (!$conn)
 			if($username=$row['username'] && $password=['password'])
 			{
 				echo "Succesful";
-				$request['succuess'] = 1;
+				$client = new rabbitMQClient("testDatabase.ini","testServer");
+				$request['success'] = 1;
+				$request['message'] = "login success"; 
 				return $request;
 			}
 			else
 			{
 				echo "Not Found";
-				$request['succuess'] = 0;
+				$client = new rabbitMQClient("testDatabase.ini","testServer");
+				$request['success'] = 0;
+				$request['message'] = "login failed"; 
 				return $request;
 			}
 		}
@@ -120,6 +140,7 @@ if (!$conn)
 	}
 
 }
+
 
 function test($request)
 {
@@ -145,16 +166,18 @@ function requestProcessor($request)
   {
 	case "register":
 	 return doRegister($request);
-	case "login":
-	 return doLogin($request);
 	case "test":
 	 return test($request);
+	case "login": 
+	return doLogin($request);
 	 default:{
-	echo "request type invalid";
-	return 0;
+	$client = new rabbitMQClient("testDatabase.ini","testServer");
+	$request['success'] = 0;
+	$request['message'] = "request type invalid"; 
+	return $request;
 	}
-  }
-//return array("returnCode" => '0', 'message'=>"Server received request and processed");
+}
+return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 
 $server = new rabbitMQServer("testDatabase.ini","testServer");
