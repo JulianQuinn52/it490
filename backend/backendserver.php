@@ -14,53 +14,31 @@ function connectDB ($request){
 	$client = new rabbitMQClient("testDatabase.ini","testServer");
 	$response = $client->send_request($request);
 	return $response;	
-	echo 'response sent';
 }
 
 
 function registerUser($request)
 {
     echo "attempting to register";
-	if(isset($request['username']) && isset($request['password'])){
-		echo 'credentials are not set';
-		return 0;
-	}
-	else{
 	return connectDB($request);
-	}
 }
 
 function loginUser($request)
 {
     echo "attempting to login";
-	if(isset($request['username']) && isset($request['password'])){
-		echo 'credentials are not set';
-		return 0;
-	}
-	else{
 	return connectDB($request);
-	}
 }
 
 function test($request){
-	echo 'test works on the backend';
-	$client = new rabbitMQClient("testDatabase.ini","testServer");
 	if(isset($request['username']) && isset($request['password'])){
 		echo 'username and passowrd check worked';
-		$result = connectDB($request);
-		if($result == 1){
-		echo 'this is a good result';
-		}
 		return connectDB($request);
-	if ($response == 1){
-	echo 'it worked apparently';
-		return $response;
-	}
-	}
-	else {
-		echo 'database failed';
-	} 
-
+		}
+		else{
+		$request['message'] = 'credentials are not set';
+		$response['success'] = 0;
+		return $request;
+		}
 } 
 
 function requestProcessor($request)
@@ -73,27 +51,33 @@ function requestProcessor($request)
   }
   switch ($request['type'])
   {
-   /*
-	case "login":
-      return loginUser($request['username'],$request['password']);
-    case "register":
-      return registerUser($request['phonenumber'], $request['username'], $request['email'], $request['password']);
-	case "test":
-		return test($request['testmessage']);
-		*/
 	case "login":
 	 return loginUser($request);
 	case "register":
 	 return registerUser($request);
-	case "test":
-	 return test($request);
-  }
+	case "test":{
+	 echo 'trying to return';
+	 return test($request); 
+	 echo "does this work?";
+	 //$client = new rabbitMQClient("testRabbitMQ.ini","testServer");
+	 //$response = $client->send_request($return);
+     }
+	default:{
+     	 echo "request type invalid";
+     	 return 0;
 }
 
+  }
+  return array("returnCode" => '0', 'message'=>"Server received request and processed");
+}
+
+
 $server = new rabbitMQServer("testRabbitMQ.ini","testServer");
+$dbserver = new rabbitMQServer("testDatabase.ini","testServer");
 
 echo "LISTENING";
 $server->process_requests('requestProcessor');
+$dbserver->process_requests('requestProcessor');
 echo "DONE";
 exit();
 ?>
