@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User data</title>
+    <link rel="stylesheet" href="recommendation_style.css" />
+  </head>
+  <body>
+      <div class="login-page">
+        <div class="form">
+          <form class="login-form" action="#" method="post" accept-charset="utf-8">
+            <input type="text" name="height" placeholder="Enter your height:">
+            <input type="number" name="weight" placeholder="Enter your weight:"> 
+            <input type="number" name="age" placeholder="Enter your age"> 
+            <input type="text" name="workoutgoal" placeholder="Enter your goal">
+            <label for="workouttype">Workout Type</label>
+                  <select name="workouttype" id="workouttype">
+                    <option value="arms">Arms</option>
+                    <option value="core">Core</option>
+                    <option value="legs">Legs</option>
+                    <option value="cardio">Cardio</option>
+		    <option value="back">Back</option>
+		    <option value="chest">Chest</option>
+                  </select>
+            <button id="btn">Get Recommendation</button>
+          </form>
+        </div>
+      </div>
+  </body>
+</html>
+
