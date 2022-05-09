@@ -226,6 +226,8 @@ function requestProcessor($request)
 	 return test($request);
 	case "login": 
 	return doLogin($request);
+	case "reccomendation":
+	 return doReccomendation($request);
 	 default:{
 	$client = new rabbitMQClient("testDatabase.ini","testServer");
 	$request['success'] = 0;
