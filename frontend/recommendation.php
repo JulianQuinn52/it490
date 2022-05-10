@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <!DOCTYPE html>
 <html>
   <head>
@@ -6,9 +5,19 @@
     <link rel="stylesheet" href="recommendation_style.css" />
   </head>
   <body>
-      <div class="login-page">
+  <body>
+    <div class = "topnav">
+            <button class = "button" onclick="location.href = 'index.php';"
+     type="button" name="home" > Home </button>
+            <button class = "button" onclick="location.href = 'form.php';"
+     type="button" name="form" > Register </button>
+            <button class = "button" onclick="location.href = 'login.php';"
+     type="button" name="about" > Login </button>      	
+        </div>
+        <body>
+      <div class="container">
         <div class="form">
-          <form class="login-form" action="#" method="post" accept-charset="utf-8">
+          <form action ="recommendation.php" method="post" accept-charset="utf-8">
             <input type="text" name="height" placeholder="Enter your height:">
             <input type="number" name="weight" placeholder="Enter your weight:"> 
             <input type="number" name="age" placeholder="Enter your age"> 
@@ -30,42 +39,30 @@
 </html>
 
 <?php
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
-echo 'sending';
+
+ini_set('display_errors',1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 $client = new rabbitMQClient("testRabbitMQ.ini","testServer");
-if (isset($argv[1]))
-{
-  $msg = $argv[1];
-}
-else
-{
-  $msg = "test message";
-}
+
 
 $request = array();
-$request['type'] = "recommendation";
+$request['type'] = "recommendations";
 $request['height'] = $_POST["height"];
 $request['weight'] = $_POST["weight"];
 $request['age'] = $_POST["age"];
 $request['workoutgoal'] = $_POST["workoutgoal"];
 $request['workouttype'] = $_POST["workouttype"];
-
-
+$request['success'] = 0;
 $response = $client->send_request($request);
 
-//echo $response['message'];
-
-if ($response['success'] == 1)
-echo "it worked";
-header("Location: $response['location']");
-else
-echo "it didn't work";
-
-echo "client received response: ".PHP_EOL;
-print_r($response);
-echo "\n\n";
 function requestProcessor($return)
 {
 echo "request processed";
@@ -80,5 +77,6 @@ echo "LISTENING";
 $server->process_requests('requestProcessor');
 echo "DONE";
 echo $argv[0]." END".PHP_EOL;
+exit();
+}
 ?>
-
