@@ -59,7 +59,7 @@ $response = $client->send_request($request);
 
 if ($response['success'] == 1)
 echo "it worked";
-//header("Location: $response['location']");
+header("Location: $response['location']");
 else
 echo "it didn't work";
 
