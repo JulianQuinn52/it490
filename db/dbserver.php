@@ -32,7 +32,7 @@ echo 'trying to register';
 	$username = $request['username'];
 	$email = $request['email'];
 	$password = $request['password'];
-	$phone = $request['phone'];
+	$phonenumber = $request['phonenumber'];
 	
     if (!$conn)
 	{
@@ -49,7 +49,7 @@ echo 'trying to register';
 	}
 	echo "Connection Established".PHP_EOL;
 	
-    $query = "INSERT INTO `it490`.`users` (`username`, `email`, `password`, `phone`) VALUES ('$username', '$email', '$password', '$phone')";
+    $query = "INSERT INTO `it490`.`users` (`username`, `email`, `password`, `phone`) VALUES ('$username', '$email', '$password', '$phonenumber')";
         
     if (mysqli_query($conn, $query)) {
   	echo "New record created successfully";
@@ -151,10 +151,12 @@ if (!$conn)
 	
 	$username = $request['username'];
 	$password = $request['password'];
+	$username = strtolower(trim($username));
+
 	
 	
 	//Search database for username and password
-	$search = "SELECT * FROM users WHERE username='$username' AND password= '$password'";
+	$search = "SELECT FROM users WHERE username='$username'";
 	
 	//Check credentials
 	$result = mysqli_query($conn, $search);
@@ -176,21 +178,23 @@ if (!$conn)
 	{
 		while($row=mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
-			if($username=$row['username'] && $password=['password'])
+			if($username=$row['username'] && password_verify($password, $row['password']))
 			{
 				echo "Succesful";
 				$client = new rabbitMQClient(validateHost("db"),"testServer");
 				$request['success'] = 1;
 				$request['message'] = "login success"; 
 				return $request;
+				return 1;
 			}
 			else
 			{
-				echo "Not Found";
+				echo "Correct Login";
 				$client = new rabbitMQClient(validateHost("db"),"testServer");
 				$request['success'] = 0;
 				$request['message'] = "login failed"; 
 				return $request;
+				return 2;
 			}
 		}
 	
